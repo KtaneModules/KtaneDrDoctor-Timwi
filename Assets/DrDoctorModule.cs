@@ -10,7 +10,7 @@ using Rnd = UnityEngine.Random;
 
 /// <summary>
 /// On the Subject of Dr. Doctor
-/// Created by ligio90
+/// Created by Timwi, DanielL, ligio90 and Rexkix
 /// </summary>
 public class DrDoctorModule : MonoBehaviour
 {
@@ -18,7 +18,6 @@ public class DrDoctorModule : MonoBehaviour
     public KMBombModule Module;
     public KMAudio Audio;
 
-    //Here's the list of all KMSelectables
     public KMSelectable Caduceus;
     public KMSelectable DateUp;
     public KMSelectable DateDwn;
@@ -32,7 +31,6 @@ public class DrDoctorModule : MonoBehaviour
     public KMSelectable DoseLeft;
     public KMSelectable DiagnoseRight;
     public KMSelectable DiagnoseLeft;
-    //End of the List
 
     public TextMesh SympText;
     public TextMesh DrugText;
@@ -44,7 +42,7 @@ public class DrDoctorModule : MonoBehaviour
     private static int _moduleIdCounter = 1;
     private int _moduleId;
 
-    private static DiseaseInfo[] _diseases = new DiseaseInfo[]
+    private static readonly DiseaseInfo[] _diseases = new DiseaseInfo[]
     {
         new DiseaseInfo { Character = 'A', Disease = "Alztimer’s",              Symptoms = new[] { "Fever", "Chills", "Dizziness" },                       Treatment = "Minecraftazol"    },
         new DiseaseInfo { Character = 'B', Disease = "Braintenance",            Symptoms = new[] { "Headache", "Sleepiness", "Thirstiness" },              Treatment = "Gr-Theta Autazine"},
@@ -79,7 +77,7 @@ public class DrDoctorModule : MonoBehaviour
         new DiseaseInfo { Character = '5', Disease = "Orientitis",              Symptoms = new[] { "Gas", "Numbness", "Loss of Smell" },                   Treatment = "Semtex"           },
         new DiseaseInfo { Character = '6', Disease = "Huntington’s disease",    Symptoms = new[] { "Cold Hands", "Sleepiness", "Throat irritation" },      Treatment = "Tetrisine"        },
     };
-    private static CorrectDates[] _dates = new CorrectDates[]
+    private static readonly CorrectDates[] _dates = new CorrectDates[]
     {
         new CorrectDates { Day = 13, Month = 1 },
         new CorrectDates { Day = 30, Month = 1 },
