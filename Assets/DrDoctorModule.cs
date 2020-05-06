@@ -533,4 +533,44 @@ public class DrDoctorModule : MonoBehaviour
         else
             yield return string.Format("sendtochaterror I don’t know a {0} called “{1}”.", thing, input);
     }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        tryAgain:
+        var halfTime = _halfBombTime > Bomb.GetTime();
+        var answer = CalculateAnswer(halfTime);
+
+        // <disease>,<treatment>,<dose>,<day>,<month>
+        while (_selectableDiagnoses[_selectedDiagnosis] != answer.Diagnosis)
+        {
+            DiagnoseRight.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+        while (_selectableTreatments[_selectedTreatment] != answer.Treatment)
+        {
+            DrugRight.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+        while (_selectableDoses[_selectedDose] != answer.Doses[Bomb.GetSolvedModuleIDs().Count])
+        {
+            DoseRight.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+        while (_selectedDate != answer.Day)
+        {
+            DateUp.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+        while (_selectedMonth != answer.Month)
+        {
+            MnthUp.OnInteract();
+            yield return new WaitForSeconds(.1f);
+        }
+
+        if (halfTime != _halfBombTime > Bomb.GetTime())
+            goto tryAgain;
+
+        Caduceus.OnInteract();
+        yield return new WaitForSeconds(.1f);
+    }
 }
