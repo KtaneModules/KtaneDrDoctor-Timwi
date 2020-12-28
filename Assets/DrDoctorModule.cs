@@ -122,6 +122,7 @@ public class DrDoctorModule : MonoBehaviour
     private int _selectedDate;
     private int _selectedMonth;
     private bool _isSolved;
+    private bool _isActivated;
     private float _halfBombTime;
 
     const string rules = "AFDPEOMZBGLQHRW1CJKUNYX5ITV3S246";
@@ -130,13 +131,13 @@ public class DrDoctorModule : MonoBehaviour
     {
         _moduleId = _moduleIdCounter++;
         _isSolved = false;
-        StartCoroutine(Initialize());
+        Module.OnActivate += Initialize;
     }
 
-    private IEnumerator Initialize()
+    private void Initialize()
     {
-        yield return null;
         _halfBombTime = Bomb.GetTime() / 2;
+        LogMessage("Bomb initial timer (in seconds): {0}", _halfBombTime * 2);
 
         var allDiseases = _diseases.ToList();
         var goodDisease1 = allDiseases.PickRandomAndRemove();
@@ -198,6 +199,7 @@ public class DrDoctorModule : MonoBehaviour
         SympRight.OnInteract += MakeButtonPressHandler(SympRight, () => { _selectedSymptom = (_selectedSymptom + 1) % _selectableSymptoms.Length; });
 
         SetTexts();
+        _isActivated = true;
     }
 
     private void SetTexts()
@@ -251,7 +253,7 @@ public class DrDoctorModule : MonoBehaviour
         {
             button.AddInteractionPunch();
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, button.transform);
-            if (!_isSolved)
+            if (_isActivated && !_isSolved)
             {
                 action();
                 SetTexts();
@@ -551,7 +553,8 @@ public class DrDoctorModule : MonoBehaviour
             DrugRight.OnInteract();
             yield return new WaitForSeconds(.1f);
         }
-        while (_selectableDoses[_selectedDose] != answer.Doses[Bomb.GetSolvedModuleIDs().Count])
+        var solves = Bomb.GetSolvedModuleIDs().Count;
+        while (_selectableDoses[_selectedDose] != answer.Doses[solves])
         {
             DoseRight.OnInteract();
             yield return new WaitForSeconds(.1f);
@@ -567,7 +570,7 @@ public class DrDoctorModule : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
 
-        if (halfTime != _halfBombTime > Bomb.GetTime())
+        if (halfTime != _halfBombTime > Bomb.GetTime() || Bomb.GetSolvedModuleIDs().Count != solves)
             goto tryAgain;
 
         Caduceus.OnInteract();
